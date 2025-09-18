@@ -1,6 +1,6 @@
 # 📚 Plataforma de Cursos Online con Dashboard de Administración
 
-![Laravel](https://img.shields.io/badge/Laravel-v10-red?style=flat&logo=laravel)  
+![Laravel](https://img.shields.io/badge/Laravel-v12-red?style=flat&logo=laravel)  
 ![React](https://img.shields.io/badge/React-v18-blue?style=flat&logo=react)  
 ![Docker](https://img.shields.io/badge/Docker-ready-blue?style=flat&logo=docker)  
 ![License](https://img.shields.io/badge/License-MIT-green?style=flat)  
