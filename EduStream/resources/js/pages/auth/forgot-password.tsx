@@ -2,11 +2,6 @@ import PasswordResetLinkController from '@/actions/App/Http/Controllers/Auth/Pas
 import { login } from '@/routes';
 import { Form, Head, Link } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
-
-import InputError from '@/components/input-error';
-import TextLink from '@/components/text-link';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 import { faBookOpen } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -70,7 +65,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
                                 <>
                                     {/* Email */}
                                     <div className="space-y-2">
-                                        <Input
+                                        <input
                                             id="email"
                                             type="email"
                                             name="email"
@@ -78,16 +73,19 @@ export default function ForgotPassword({ status }: { status?: string }) {
                                             autoFocus
                                             autoComplete="email"
                                             placeholder="Correo electrónico"
-                                            className={`h-12 bg-slate-700/50 border ${emailError || errors.email ? "border-red-500 focus:border-red-500 focus:ring-red-500/20" : "border-slate-600 focus:border-blue-500 focus:ring-blue-500/20"} text-white placeholder:text-slate-400 rounded-lg`}
+                                            className={`input input-bordered w-full h-12 bg-slate-700/50 text-white placeholder:text-slate-400 ${emailError || errors.email ? "border-red-500 focus:border-red-500" : "border-slate-600 focus:border-blue-500"}`}
                                             onBlur={handleBlurEmail}
                                         />
-                                        <InputError message={errors.email || emailError || undefined} />
+                                        {(errors.email || emailError) && (
+                                            <p className="text-red-500 text-sm">{errors.email || emailError}</p>
+                                        )}
                                     </div>
 
                                     {/* Submit */}
-                                    <Button 
+                                    <button 
                                         type="submit" 
-                                        className="w-full h-12 bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 text-white font-semibold rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl" 
+                                        className="btn btn-primary w-full h-12 rounded-lg shadow-lg hover:shadow-xl" 
+                                        tabIndex={4} 
                                         disabled={processing}
                                     >
                                         {processing ? (
@@ -98,17 +96,17 @@ export default function ForgotPassword({ status }: { status?: string }) {
                                         ) : (
                                             'Enviar enlace de restablecimiento'
                                         )}
-                                    </Button>
+                                    </button>
 
                                     {/* Login Link */}
                                     <div className="text-center">
                                         <span className="text-slate-400">¿Recordaste tu contraseña? </span>
-                                        <TextLink 
+                                        <Link 
                                             href={login()} 
                                             className="text-blue-400 hover:text-green-400 hover:underline font-medium transition-colors"
                                         >
                                             Iniciar sesión
-                                        </TextLink>
+                                        </Link>
                                     </div>
                                 </>
                             )}

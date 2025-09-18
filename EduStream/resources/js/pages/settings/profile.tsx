@@ -1,139 +1,57 @@
-import ProfileController from '@/actions/App/Http/Controllers/Settings/ProfileController'
-import { send } from '@/routes/verification'
-import { type BreadcrumbItem, type SharedData } from '@/types'
-import { Transition } from '@headlessui/react'
-import { Form, Head, Link, usePage } from '@inertiajs/react'
+import { Head } from '@inertiajs/react'
 
+import { type BreadcrumbItem } from '@/types'
 
 import AppLayout from '@/layouts/app-layout'
 import SettingsLayout from '@/layouts/settings/layout'
-import { edit } from '@/routes/profile'
+import { edit as editAppearance } from '@/routes/appearance'
+
+import ThemeSwitcher from '@/components/ThemeSwitcher' // Ajusta la ruta según tu proyecto
 
 const breadcrumbs: BreadcrumbItem[] = [
   {
-    title: 'Configuración de perfil',
-    href: edit().url,
+    title: 'Configuración de apariencia',
+    href: editAppearance().url,
   },
 ]
 
-export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: boolean; status?: string }) {
-  const { auth } = usePage<SharedData>().props
-
+export default function Appearance() {
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
-      <Head title="Configuración de perfil" />
+      <Head title="Configuración de apariencia" />
 
       <SettingsLayout>
         <div className="space-y-8">
-          {/* Card Información de perfil */}
+          {/* Card Apariencia */}
           <div className="card bg-base-100 shadow-xl border border-base-300 rounded-xl">
             <div className="card-body">
-              <h2 className="card-title text-lg font-bold text-primary">Información de perfil</h2>
+              <h2 className="card-title text-lg font-bold text-primary">
+                Configuración de apariencia
+              </h2>
               <p className="text-sm opacity-70 mb-4">
-                Actualiza tu nombre y correo electrónico.
+                Personaliza el aspecto de tu cuenta y cómo se muestra EduStream.
               </p>
 
-              <Form
-                {...ProfileController.update.form()}
-                options={{ preserveScroll: true }}
-                className="space-y-6"
-              >
-                {({ processing, recentlySuccessful, errors }) => (
-                  <>
-                    {/* Nombre */}
-                    <div className="form-control">
-                      <label className="label" htmlFor="name">
-                        <span className="label-text">Nombre completo</span>
-                      </label>
-                      <input
-                        id="name"
-                        name="name"
-                        type="text"
-                        defaultValue={auth.user.name}
-                        placeholder="Tu nombre"
-                        required
-                        autoComplete="name"
-                        className="input input-bordered w-full"
-                      />
-                      {errors.name && (
-                        <span className="text-error text-sm mt-1">{errors.name}</span>
-                      )}
-                    </div>
+              {/* ThemeSwitcher */}
+              <div className="space-y-4">
+                <h3 className="font-semibold text-sm">Tema</h3>
+                <ThemeSwitcher />
+              </div>
 
-                    {/* Email */}
-                    <div className="form-control">
-                      <label className="label" htmlFor="email">
-                        <span className="label-text">Correo electrónico</span>
-                      </label>
-                      <input
-                        id="email"
-                        name="email"
-                        type="email"
-                        defaultValue={auth.user.email}
-                        placeholder="correo@ejemplo.com"
-                        required
-                        autoComplete="username"
-                        className="input input-bordered w-full"
-                      />
-                      {errors.email && (
-                        <span className="text-error text-sm mt-1">{errors.email}</span>
-                      )}
-                    </div>
-
-                    {/* Verificación email */}
-                    {mustVerifyEmail && auth.user.email_verified_at === null && (
-                      <div className="mt-2">
-                        <div className="alert alert-warning rounded-xl">
-                          <span>
-                            Tu correo aún no está verificado.{' '}
-                            <Link
-                              href={send()}
-                              as="button"
-                              className="link link-primary"
-                            >
-                              Haz clic aquí para reenviar el correo de verificación.
-                            </Link>
-                          </span>
-                        </div>
-
-                        {status === 'verification-link-sent' && (
-                          <div className="badge badge-success mt-2">
-                            Nuevo enlace de verificación enviado.
-                          </div>
-                        )}
-                      </div>
-                    )}
-
-                    {/* Botones */}
-                    <div className="flex items-center gap-4">
-                      <button
-                        type="submit"
-                        disabled={processing}
-                        className="btn btn-primary rounded-xl"
-                      >
-                        Guardar cambios
-                      </button>
-
-                      <Transition
-                        show={recentlySuccessful}
-                        enter="transition ease-in-out"
-                        enterFrom="opacity-0"
-                        leave="transition ease-in-out"
-                        leaveTo="opacity-0"
-                      >
-                        <p className="text-sm text-success">Guardado</p>
-                      </Transition>
-                    </div>
-                  </>
-                )}
-              </Form>
+              {/* Futuras secciones */}
+              <div className="mt-6">
+                <h3 className="font-semibold text-sm">Fuentes</h3>
+                <p className="text-sm opacity-70">
+                  Aquí puedes personalizar las fuentes de la interfaz (pendiente implementar).
+                </p>
+              </div>
             </div>
           </div>
 
-          {/* Eliminar usuario */}
+          {/* Opcional: sección adicional, ejemplo eliminar apariencia */}
           <div className="card bg-base-100 shadow-xl border border-base-300 rounded-xl">
             <div className="card-body">
-              
+              {/* Aquí puedes agregar secciones adicionales si es necesario */}
             </div>
           </div>
         </div>

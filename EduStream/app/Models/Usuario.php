@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Notifications\ResetPassword as ResetPasswordNotification;
+
 
 class Usuario extends Authenticatable
 {
@@ -26,18 +28,26 @@ class Usuario extends Authenticatable
     ];
 
     // Relaciones
-    public function rol()
-    {
-        return $this->belongsTo(Rol::class);
-    }
+    // public function rol()
+    // {
+    //     return $this->belongsTo(Rol::class);
+    // }
 
     public function cursos()
     {
         return $this->hasMany(Curso::class, 'admin_id');
     }
 
-    public function inscripciones()
+    // public function inscripciones()
+    // {
+    //     return $this->hasMany(Inscripcion::class);
+    // }
+
+    /**
+     * Sobrescribe la notificación de restablecimiento de contraseña
+     */
+    public function sendPasswordResetNotification($token)
     {
-        return $this->hasMany(Inscripcion::class);
+        $this->notify(new ResetPasswordNotification($token));
     }
 }

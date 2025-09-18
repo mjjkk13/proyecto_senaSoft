@@ -1,74 +1,71 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from "react";
 
-export type Appearance = 'light' | 'dark' | 'system';
+export type Appearance =
+  | "light"
+  | "dark"
+  | "cupcake"
+  | "bumblebee"
+  | "emerald"
+  | "corporate"
+  | "synthwave"
+  | "halloween"
+  | "system";
 
 const prefersDark = () => {
-    if (typeof window === 'undefined') {
-        return false;
-    }
-
-    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  if (typeof window === "undefined") return false;
+  return window.matchMedia("(prefers-color-scheme: dark)").matches;
 };
 
 const setCookie = (name: string, value: string, days = 365) => {
-    if (typeof document === 'undefined') {
-        return;
-    }
-
-    const maxAge = days * 24 * 60 * 60;
-    document.cookie = `${name}=${value};path=/;max-age=${maxAge};SameSite=Lax`;
+  if (typeof document === "undefined") return;
+  const maxAge = days * 24 * 60 * 60;
+  document.cookie = `${name}=${value};path=/;max-age=${maxAge};SameSite=Lax`;
 };
 
 const applyTheme = (appearance: Appearance) => {
-    const isDark = appearance === 'dark' || (appearance === 'system' && prefersDark());
+  let theme = appearance;
 
-    document.documentElement.classList.toggle('dark', isDark);
-    document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
+  if (appearance === "system") {
+    theme = prefersDark() ? "dark" : "light";
+  }
+
+  document.documentElement.setAttribute("data-theme", theme);
+  document.documentElement.classList.toggle("dark", theme === "dark");
+  document.documentElement.style.colorScheme = theme === "dark" ? "dark" : "light";
 };
 
 const mediaQuery = () => {
-    if (typeof window === 'undefined') {
-        return null;
-    }
-
-    return window.matchMedia('(prefers-color-scheme: dark)');
+  if (typeof window === "undefined") return null;
+  return window.matchMedia("(prefers-color-scheme: dark)");
 };
 
 const handleSystemThemeChange = () => {
-    const currentAppearance = localStorage.getItem('appearance') as Appearance;
-    applyTheme(currentAppearance || 'system');
+  const currentAppearance = (localStorage.getItem("appearance") as Appearance) || "system";
+  applyTheme(currentAppearance);
 };
 
 export function initializeTheme() {
-    const savedAppearance = (localStorage.getItem('appearance') as Appearance) || 'system';
-
-    applyTheme(savedAppearance);
-
-    // Add the event listener for system theme changes...
-    mediaQuery()?.addEventListener('change', handleSystemThemeChange);
+  const savedAppearance = (localStorage.getItem("appearance") as Appearance) || "system";
+  applyTheme(savedAppearance);
+  mediaQuery()?.addEventListener("change", handleSystemThemeChange);
 }
 
 export function useAppearance() {
-    const [appearance, setAppearance] = useState<Appearance>('system');
+  const [appearance, setAppearance] = useState<Appearance>("system");
 
-    const updateAppearance = useCallback((mode: Appearance) => {
-        setAppearance(mode);
+  const updateAppearance = useCallback((mode: Appearance) => {
+    setAppearance(mode);
+    localStorage.setItem("appearance", mode);
+    setCookie("appearance", mode);
+    applyTheme(mode);
+  }, []);
 
-        // Store in localStorage for client-side persistence...
-        localStorage.setItem('appearance', mode);
+  useEffect(() => {
+    const savedAppearance = (localStorage.getItem("appearance") as Appearance) || "system";
+    updateAppearance(savedAppearance);
 
-        // Store in cookie for SSR...
-        setCookie('appearance', mode);
+    return () => mediaQuery()?.removeEventListener("change", handleSystemThemeChange);
+  }, [updateAppearance]);
 
-        applyTheme(mode);
-    }, []);
-
-    useEffect(() => {
-        const savedAppearance = localStorage.getItem('appearance') as Appearance | null;
-        updateAppearance(savedAppearance || 'system');
-
-        return () => mediaQuery()?.removeEventListener('change', handleSystemThemeChange);
-    }, [updateAppearance]);
-
-    return { appearance, updateAppearance } as const;
+  return { appearance, updateAppearance } as const;
 }
