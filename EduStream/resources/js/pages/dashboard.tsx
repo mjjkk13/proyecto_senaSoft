@@ -1,8 +1,9 @@
 import { Head, Link, usePage } from '@inertiajs/react'
 import { edit as editProfile } from '@/routes/profile'
-import { create, edit, destroy } from '@/routes/cursos'
+import { create, edit, destroy, store } from '@/routes/cursos'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faPlus, faEdit, faTrash, faUser } from "@fortawesome/free-solid-svg-icons"
+
 
 export default function Dashboard() {
   const props = usePage<{
@@ -22,9 +23,11 @@ export default function Dashboard() {
             <h1 className="text-2xl font-bold text-primary">EduStream Dashboard</h1>
           </div>
           <div className="flex-none flex items-center gap-3">
-            <Link href={create.url()} className="btn btn-primary btn-sm md:btn-md gap-2 rounded-xl shadow">
-              <FontAwesomeIcon icon={faPlus} /> Nuevo Curso
-            </Link>
+            <AppSwalAdd endpoint={store.url()}>
+              <button className="btn btn-primary btn-sm md:btn-md gap-2 rounded-xl shadow">
+                <FontAwesomeIcon icon={faPlus} /> Nuevo Curso
+              </button>
+            </AppSwalAdd>
             <Link href={editProfile.url()} className="btn btn-ghost btn-sm md:btn-md rounded-xl border border-primary text-primary hover:bg-primary hover:text-white">
               <FontAwesomeIcon icon={faUser} /> Perfil
             </Link>

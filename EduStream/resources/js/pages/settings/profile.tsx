@@ -4,7 +4,7 @@ import { type BreadcrumbItem, type SharedData } from '@/types'
 import { Transition } from '@headlessui/react'
 import { Form, Head, Link, usePage } from '@inertiajs/react'
 
-import DeleteUser from '@/components/delete-user'
+
 import AppLayout from '@/layouts/app-layout'
 import SettingsLayout from '@/layouts/settings/layout'
 import { edit } from '@/routes/profile'
@@ -133,7 +133,7 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
           {/* Eliminar usuario */}
           <div className="card bg-base-100 shadow-xl border border-base-300 rounded-xl">
             <div className="card-body">
-              <DeleteUser />
+              
             </div>
           </div>
         </div>

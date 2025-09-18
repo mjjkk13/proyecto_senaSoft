@@ -40,6 +40,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('cursos', CursoController::class);
     Route::resource('inscripciones', InscripcionController::class)->only(['index','destroy']);
     Route::get('stats', [StatsController::class, 'index'])->name('stats.index');
+    Route::get('/cursos', [CursoController::class, 'index'])->name('cursos.index');
 });
 
 require __DIR__.'/settings.php';

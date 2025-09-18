@@ -1,8 +1,4 @@
 import ConfirmablePasswordController from '@/actions/App/Http/Controllers/Auth/ConfirmablePasswordController';
-import InputError from '@/components/input-error';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth-layout';
 import { Form, Head } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
@@ -18,18 +14,35 @@ export default function ConfirmPassword() {
             <Form {...ConfirmablePasswordController.store.form()} resetOnSuccess={['password']}>
                 {({ processing, errors }) => (
                     <div className="space-y-6">
+                        {errors.password && (
+                            <div className="alert alert-error">
+                                <span>{errors.password}</span>
+                            </div>
+                        )}
                         <div className="grid gap-2">
-                            <Label htmlFor="password">Password</Label>
-                            <Input id="password" type="password" name="password" placeholder="Password" autoComplete="current-password" autoFocus />
+                            <label htmlFor="password" className="label">
+                                <span className="label-text">Password</span>
+                            </label>
+                            <input
+                                id="password"
+                                type="password"
+                                name="password"
+                                placeholder="Password"
+                                autoComplete="current-password"
+                                autoFocus
+                                className="input input-bordered w-full"
+                            />
 
-                            <InputError message={errors.password} />
+                            {errors.password && (
+                                <span className="text-error text-sm">{errors.password}</span>
+                            )}
                         </div>
 
                         <div className="flex items-center">
-                            <Button className="w-full" disabled={processing} data-test="confirm-password-button">
+                            <button className="btn btn-primary w-full" disabled={processing} data-test="confirm-password-button">
                                 {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
                                 Confirm password
-                            </Button>
+                            </button>
                         </div>
                     </div>
                 )}
