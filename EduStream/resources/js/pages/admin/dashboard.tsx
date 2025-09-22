@@ -1,11 +1,15 @@
 import { dashboard, logout } from '@/routes'
 import { type BreadcrumbItem } from "@/types";
-import { Head, Link, usePage } from "@inertiajs/react";
+import { Head, Link, router, usePage } from "@inertiajs/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faEdit, faTrash, faUsers, faUserCircle, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 import { BookOpen, CheckCircle, Target } from "lucide-react";
-import { edit, destroy, store } from "@/routes/cursos";
 import Sidebar from '@/components/sidebar-admin';
+import  AddModal  from '@/components/add-modal';
+import EditModal from '@/components/edit-modal';
+import ConfirmModal from '@/components/delete-modal';
+import { route } from 'ziggy-js';
+
 
 const breadcrumbs: BreadcrumbItem[] = [
   { title: "Dashboard Admin", href: dashboard.url(), label: undefined },
@@ -21,6 +25,7 @@ export default function AdminDashboard() {
       }
     }
     cursos?: {
+      descripcion: string;
       id: number;
       title: string;
       students_count: number;
@@ -153,10 +158,13 @@ export default function AdminDashboard() {
                 <h2 className="text-xl font-bold">Gestión de Cursos</h2>
                 <button
                   className="btn btn-primary btn-sm md:btn-md gap-2 rounded-xl shadow"
-                  onClick={() => store.url()}
+                   onClick={() =>
+                    (document.getElementById('add_modal') as HTMLDialogElement)?.showModal()
+                  }
                 >
                   <FontAwesomeIcon icon={faPlus} /> Nuevo Curso
                 </button>
+                 <AddModal />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -165,55 +173,79 @@ export default function AdminDashboard() {
                     No hay cursos disponibles todavía.
                   </div>
                 )}
-                {cursos.map((course) => {
-                  const progress = course.completedLessons && course.totalLessons
+              {cursos.map((course) => {
+                const progress =
+                  course.completedLessons && course.totalLessons
                     ? (course.completedLessons / course.totalLessons) * 100
                     : 0;
 
-                  return (
-                    <div
-                      key={course.id}
-                      className="card bg-base-100 shadow-xl border border-base-300 rounded-xl overflow-hidden"
-                    >
-                      <figure className="relative">
-                        <img src={course.img_url} alt={course.title} className="w-full h-40 object-cover" />
-                        {progress > 0 && (
-                          <div className="absolute bottom-0 left-0 w-full bg-black/30 h-2">
-                            <div
-                              className="bg-green-500 h-2 transition-all"
-                              style={{ width: `${progress}%` }}
-                            />
-                          </div>
-                        )}
-                      </figure>
-                      <div className="card-body">
-                        <h2 className="card-title text-lg">{course.title}</h2>
-                        <p className="text-sm opacity-80">{course.students_count} inscritos</p>
-                        {course.completedLessons && course.totalLessons && (
-                          <span className="badge badge-accent text-xs mt-1">
-                            {course.completedLessons} / {course.totalLessons} lecciones
-                          </span>
-                        )}
-                        <div className="card-actions justify-between mt-3 gap-2">
-                          <Link
-                            href={edit.url(course.id)}
-                            className="btn btn-outline btn-primary btn-sm rounded-xl gap-2"
-                          >
-                            <FontAwesomeIcon icon={faEdit} /> Editar
-                          </Link>
-                          <Link
-                            method="delete"
-                            href={destroy.url(course.id)}
-                            as="button"
-                            className="btn btn-error btn-sm rounded-xl text-white gap-2"
-                          >
-                            <FontAwesomeIcon icon={faTrash} /> Eliminar
-                          </Link>
+                return (
+                  <div key={course.id} className="card ...">
+                    <figure className="relative">
+                      <img
+                        src={`${course.img_url}`}  
+                        alt={course.title}
+                        className="w-full h-40 object-cover"
+                      />
+                      {progress > 0 && (
+                        <div className="absolute bottom-0 left-0 w-full bg-black/30 h-2">
+                          <div
+                            className="bg-green-500 h-2 transition-all"
+                            style={{ width: `${progress}%` }}
+                          />
                         </div>
+                      )}
+                    </figure>
+                    <div className="card-body">
+                      <h2 className="card-title text-lg">{course.title}</h2>
+                      <p className="text-sm opacity-80">{course.students_count} inscritos</p>
+                      {course.completedLessons && course.totalLessons && (
+                        <span className="badge badge-accent text-xs mt-1">
+                          {course.completedLessons} / {course.totalLessons} lecciones
+                        </span>
+                      )}
+                      <div className="card-actions justify-between mt-3 gap-2">
+                        {/* Botón Editar */}
+                        <button
+                          className="btn btn-outline btn-primary btn-sm rounded-xl gap-2"
+                          onClick={() =>
+                            (document.getElementById(`edit_modal_${course.id}`) as HTMLDialogElement)?.showModal()
+                          }
+                        >
+                          <FontAwesomeIcon icon={faEdit} /> Editar
+                        </button>
+                        <EditModal
+                          curso={{
+                            id: course.id,
+                            nombre: course.title,
+                            descripcion: course.descripcion || '',
+                            img_url: course.img_url,
+                          }}
+                        />
+
+                        {/* Botón Eliminar */}
+                        <ConfirmModal
+                          title="Eliminar curso"
+                          text={`¿Deseas eliminar el curso "${course.title}"? Esta acción no se puede deshacer.`}
+                          confirmButtonText="Sí, eliminar"
+                          cancelButtonText="Cancelar"
+                          onConfirm={() => {
+                            router.delete(route('admin.cursos.destroy', course.id), {
+                              onSuccess: () => {
+                                router.reload(); // fuerza la recarga del dashboard
+                              },
+                            });
+                          }}
+                        >
+                          <button className="btn btn-error btn-sm rounded-xl text-white gap-2">
+                            <FontAwesomeIcon icon={faTrash} /> Eliminar
+                          </button>
+                        </ConfirmModal>
                       </div>
                     </div>
-                  );
-                })}
+                  </div>
+                );
+              })}
               </div>
             </div>
 

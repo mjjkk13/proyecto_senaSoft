@@ -57,10 +57,10 @@ Plataforma web full-stack para cursos online con:
 
 **Frontend**
 - React (V18)
-- TailwindCSS / ShadCN UI
+- TailwindCSS / ShadCN UI / Daisyui
 
 **Backend**
-- Laravel (PHP 8.1+)
+- Laravel 12V (PHP 8.1+)
 - MySQL o PostgreSQL
 
 **Dev / Ops**
@@ -72,11 +72,7 @@ Plataforma web full-stack para cursos online con:
 ## 📂 Estructura del Proyecto
 
 ```plaintext
-/frontend   -> React (interfaz principal y dashboard)
-/backend    -> Laravel (API REST y lógica de negocio)
-/docs       -> Documentación del proyecto (diagramas, mockups)
-/tests      -> Pruebas automatizadas (si aplica fuera de cada carpeta)
-/docker     -> Archivos Docker / docker-compose
+/EduStream   -> React (interfaz principal y dashboard) y Laravel (API REST y lógica de negocio)
 ```
 
 ---
@@ -84,6 +80,7 @@ Plataforma web full-stack para cursos online con:
 ## ▶️ Ejecución del Proyecto
 
 ### 🔧 Requisitos previos
+
 - Git
 - Node.js v18+
 - npm o pnpm
@@ -93,45 +90,53 @@ Plataforma web full-stack para cursos online con:
 
 ---
 
-### 🐳 Pasos (con Docker)
+
 1. Clonar el repositorio:
    ```bash
-   git clone https://github.com/tu_usuario/tu_repositorio.git
-   cd tu_repositorio
+   git clone https://github.com/mjjkk13/proyecto_senaSoft.git
+   cd EduStream
    ```
-2. Copiar ejemplos de variables de entorno (si aplica):
+2. Descargar dependencias y activar el APP KEY:
+   ```bash
+   npm install
+   composer install
+   php artisan key:generate
+   ```
+3. Copiar ejemplos de variables de entorno (si aplica):
    ```bash
    cp backend/.env.example backend/.env
    cp frontend/.env.example frontend/.env
    ```
-3. Levantar todo con Docker Compose:
+<!--4. Levantar todo con Docker Compose:
    ```bash
    docker-compose up --build -d
    ```
-4. Ejecutar migraciones y seeders (desde el contenedor del backend):
+5. Ejecutar migraciones y seeders (desde el contenedor del backend):
    ```bash
    docker-compose exec backend php artisan key:generate
    docker-compose exec backend php artisan migrate --seed
    ```
-5. Acceder:
+6. Acceder:
    - Frontend: `http://localhost:3000`
    - Backend (API): `http://localhost:8000`
    - Base de datos (ej. MySQL): puerto según `docker-compose.yml` (p. ej. 3306)
 
 ---
-
+-->
 ### 🖥️ Pasos (sin Docker — ejecución local)
-#### Backend (Laravel)
+#### Laravel y React con Inersia.js
 ```bash
-cd backend
+
+cd EduStream
 composer install
+npm install
 cp .env.example .env
 # configurar .env (DB, APP_URL, etc.)
 php artisan key:generate
 php artisan migrate --seed
-php artisan serve --host=0.0.0.0 --port=8000
+composer run dev # modo desarrollo
 ```
-
+<!--
 #### Frontend (React)
 ```bash
 cd frontend
@@ -161,7 +166,7 @@ php artisan test
 vendor/bin/phpunit
 ```
 
-### Frontend (Jest / Testing Library)
+//### Frontend (Jest / Testing Library)
 ```bash
 cd frontend
 npm install
@@ -174,7 +179,7 @@ npm run test:watch
 
 ---
 
-## 📸 Preview
+//## 📸 Preview
 
 A continuación tienes un bloque con **placeholder** para imágenes y un diagrama de arquitectura en Mermaid.  
 Sustituye `docs/preview.png` por tus capturas o mockups cuando las tengas.
@@ -182,19 +187,21 @@ Sustituye `docs/preview.png` por tus capturas o mockups cuando las tengas.
 ```markdown
 ![Preview de la plataforma](docs/preview.png)
 ```
-
+-->
+<!--
 ```mermaid
 flowchart LR
-  A[Usuario (Web)] -->|Navega| F(Frontend - React)
-  F --> |Consume API| B[Backend - Laravel]
-  B --> C[(Base de Datos - MySQL/Postgres)]
-  B --> D[Servicios: Auth, Storage, Jobs]
-  F --> E[Dashboard Admin]
+  A[Usuario (Web)] |Navega| F(Frontend - React)
+  F |Consume API| B[Backend - Laravel]
+  B  C[(Base de Datos - MySQL/Postgres)]
+  B  D[Servicios: Auth, Storage, Jobs]
+  F  E[Dashboard Admin]
   subgraph Docker
     F
     B
     C
   end
+  -->
 ```
 
 ---
@@ -225,6 +232,7 @@ flowchart LR
 5. Mantén tu PR pequeño y enfocado; incluye capturas o tests cuando aplique.
 
 **Checklist de PR**
+
 - [ ] Código formateado y lint pasado.
 - [ ] Tests relevantes añadidos/actualizados.
 - [ ] Documentación actualizada (README, /docs).

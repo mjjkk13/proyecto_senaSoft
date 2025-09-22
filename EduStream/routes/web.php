@@ -3,54 +3,65 @@
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\MailTestController;
-use App\Http\Controllers\CursoController;
-use App\Http\Controllers\InscripcionController;
-use App\Http\Controllers\StatsController;
+
+// Controladores Admin
+use App\Http\Controllers\Admin\CursoController;
+use App\Http\Controllers\Admin\UsuarioController;
+use App\Http\Controllers\Admin\InscripcionController;
+use App\Http\Controllers\Admin\StatsController;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
 })->name('home');
 
-// Ruta de prueba para envío de correos
-Route::get('/test-mail', [MailTestController::class, 'send']);
-
 Route::middleware(['auth', 'verified'])->group(function () {
     // Dashboard de administrador
     Route::get('/admin/dashboard', function () {
-        $cursos = DB::table('cursos')
-            ->leftJoin('inscripciones', 'inscripciones.curso_id', '=', 'cursos.id')
-            ->select(
-                'cursos.id',
-                DB::raw('cursos.nombre as title'),
-                DB::raw('COUNT(inscripciones.id) as students_count')
-            )
-            ->groupBy('cursos.id', 'cursos.nombre')
-            ->get()
-            ->map(function ($curso) {
-                $curso->img_url = 'https://picsum.photos/seed/' . $curso->id . '/400/200';
-                return $curso;
-            });
+        // Traer cursos con cantidad de inscritos y la imagen real
+    $cursos = DB::table('cursos')
+    ->leftJoin('inscripciones', 'inscripciones.curso_id', '=', 'cursos.id')
+    ->select(
+        'cursos.id',
+        'cursos.nombre as title',
+        'cursos.img_url as img_url',
+        DB::raw('COUNT(inscripciones.id) as students_count')
+    )
+    ->groupBy('cursos.id', 'cursos.nombre', 'cursos.img_url')
+    ->get()
+    ->map(function ($curso) {
+        $curso->img_url = $curso->img_url ? asset('storage/' . $curso->img_url) : '/img/default-course.png';
+        return $curso;
+    });
 
+
+        // Traer todos los usuarios
+        $usuarios = DB::table('usuarios')->get();
+        $totalUsuarios = $usuarios->count();
+
+        // Estadísticas rápidas
         $stats = [
             'totalCursos' => DB::table('cursos')->count(),
             'totalInscritos' => DB::table('inscripciones')->count(),
+            'totalUsuarios' => $totalUsuarios,
         ];
 
         return Inertia::render('admin/dashboard', [
             'cursos' => $cursos,
+            'usuarios' => $usuarios,
             'stats'  => $stats,
         ]);
     })->middleware('Administrador')->name('dashboard');
 
-    //  CRUD de Cursos
-    Route::resource('cursos', CursoController::class);
+    // CRUD de Cursos y Usuarios
+    Route::prefix('admin')->name('admin.')->middleware('Administrador')->group(function () {
+        Route::resource('cursos', CursoController::class);
 
-    // Inscripciones (solo index y destroy)
-    Route::resource('inscripciones', InscripcionController::class)->only(['index', 'destroy']);
-
-    // Estadísticas
-    Route::get('stats', [StatsController::class, 'index'])->name('stats.index');
+        // CRUD de Usuarios (sin create)
+        Route::get('usuarios', [UsuarioController::class, 'index'])->name('usuarios.index');
+        Route::get('usuarios/{usuario}/edit', [UsuarioController::class, 'edit'])->name('usuarios.edit');
+        Route::put('usuarios/{usuario}', [UsuarioController::class, 'update'])->name('usuarios.update');
+        Route::delete('usuarios/{usuario}', [UsuarioController::class, 'destroy'])->name('usuarios.destroy');
+    });
 });
 
 require __DIR__.'/settings.php';

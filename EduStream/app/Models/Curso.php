@@ -18,6 +18,7 @@ class Curso extends Model
     protected $fillable = [
         'nombre',
         'descripcion',
+        'img_url',
         'admin_id',
     ];
 
