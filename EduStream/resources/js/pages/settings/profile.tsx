@@ -12,6 +12,7 @@ const breadcrumbs: BreadcrumbItem[] = [
   {
     title: 'Configuración de apariencia',
     href: editAppearance().url,
+    label: undefined
   },
 ]
 

@@ -16,10 +16,15 @@ Route::get('/', function () {
 Route::get('/test-mail', [MailTestController::class, 'send']);
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', function () {
+    // Dashboard de administrador
+    Route::get('/admin/dashboard', function () {
         $cursos = DB::table('cursos')
             ->leftJoin('inscripciones', 'inscripciones.curso_id', '=', 'cursos.id')
-            ->select('cursos.id', DB::raw('cursos.nombre as title'), DB::raw('COUNT(inscripciones.id) as students_count'))
+            ->select(
+                'cursos.id',
+                DB::raw('cursos.nombre as title'),
+                DB::raw('COUNT(inscripciones.id) as students_count')
+            )
             ->groupBy('cursos.id', 'cursos.nombre')
             ->get()
             ->map(function ($curso) {
@@ -32,15 +37,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
             'totalInscritos' => DB::table('inscripciones')->count(),
         ];
 
-        return Inertia::render('dashboard', [
+        return Inertia::render('admin/dashboard', [
             'cursos' => $cursos,
-            'stats' => $stats,
+            'stats'  => $stats,
         ]);
     })->middleware('Administrador')->name('dashboard');
+
+    //  CRUD de Cursos
     Route::resource('cursos', CursoController::class);
-    Route::resource('inscripciones', InscripcionController::class)->only(['index','destroy']);
+
+    // Inscripciones (solo index y destroy)
+    Route::resource('inscripciones', InscripcionController::class)->only(['index', 'destroy']);
+
+    // Estadísticas
     Route::get('stats', [StatsController::class, 'index'])->name('stats.index');
-    Route::get('/cursos', [CursoController::class, 'index'])->name('cursos.index');
 });
 
 require __DIR__.'/settings.php';

@@ -6,6 +6,7 @@ export interface Auth {
 }
 
 export interface BreadcrumbItem {
+    label: ReactNode;
     title: string;
     href: string;
 }

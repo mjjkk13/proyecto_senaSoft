@@ -23,6 +23,11 @@ class CursoController extends Controller
         ]);
     }
 
+    public function create()
+    {
+        return Inertia::render('Cursos/Create');
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -31,11 +36,35 @@ class CursoController extends Controller
             'admin_id' => 'nullable|exists:usuarios,id',
         ]);
 
-        $curso = Curso::create($validated);
+        Curso::create($validated);
 
-        return response()->json([
-            'message' => 'Curso creado exitosamente',
-            'curso'   => $curso,
-        ], 201);
+        return redirect()->route('cursos.index')->with('success', 'Curso creado exitosamente.');
+    }
+
+    public function edit(Curso $curso)
+    {
+        return Inertia::render('Cursos/Edit', [
+            'curso' => $curso,
+        ]);
+    }
+
+    public function update(Request $request, Curso $curso)
+    {
+        $validated = $request->validate([
+            'nombre' => 'required|string|max:150',
+            'descripcion' => 'nullable|string',
+            'admin_id' => 'nullable|exists:usuarios,id',
+        ]);
+
+        $curso->update($validated);
+
+        return redirect()->route('cursos.index')->with('success', 'Curso actualizado correctamente.');
+    }
+
+    public function destroy(Curso $curso)
+    {
+        $curso->delete();
+
+        return redirect()->route('cursos.index')->with('success', 'Curso eliminado.');
     }
 }
