@@ -107,6 +107,11 @@ Plataforma web full-stack para cursos online con:
    cp backend/.env.example backend/.env
    cp frontend/.env.example frontend/.env
    ```
+4. Crear enlace simbólico para public (render de img)
+```bash
+php artisan storage:link
+```
+
 <!--4. Levantar todo con Docker Compose:
    ```bash
    docker-compose up --build -d
