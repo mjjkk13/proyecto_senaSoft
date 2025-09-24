@@ -25,9 +25,9 @@ export default function AdminDashboard() {
       }
     }
     cursos?: {
-      descripcion: string;
       id: number;
       title: string;
+      descripcion: string;
       students_count: number;
       img_url: string;
       completedLessons?: number;
@@ -180,10 +180,10 @@ export default function AdminDashboard() {
                     : 0;
 
                 return (
-                  <div key={course.id} className="card ...">
+                  <div key={course.id} className="card bg-base-100 shadow-xl border border-base-300">
                     <figure className="relative">
                       <img
-                        src={`${course.img_url}`}  
+                        src={course.img_url || '/images/default-course.jpg'}  
                         alt={course.title}
                         className="w-full h-40 object-cover"
                       />
@@ -198,6 +198,15 @@ export default function AdminDashboard() {
                     </figure>
                     <div className="card-body">
                       <h2 className="card-title text-lg">{course.title}</h2>
+                      
+                      {/* Descripción corregida */}
+                      <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3">
+                        {course.descripcion && course.descripcion.trim() !== '' 
+                          ? course.descripcion 
+                          : 'Sin descripción disponible'
+                        }
+                      </p>
+                      
                       <p className="text-sm opacity-80">{course.students_count} inscritos</p>
                       {course.completedLessons && course.totalLessons && (
                         <span className="badge badge-accent text-xs mt-1">
@@ -232,7 +241,7 @@ export default function AdminDashboard() {
                           onConfirm={() => {
                             router.delete(route('admin.cursos.destroy', course.id), {
                               onSuccess: () => {
-                                router.reload(); // fuerza la recarga del dashboard
+                                router.reload();
                               },
                             });
                           }}

@@ -13,7 +13,7 @@ use App\Http\Controllers\Admin\StatsController;
 Route::get('/', function () {
     return Inertia::render('welcome');
 })->name('home');
-
+Route::get('/api/cursos-debug', [CursoController::class, 'debug'])->name('cursos.debug');
 Route::middleware(['auth', 'verified'])->group(function () {
     // Dashboard de administrador
     Route::get('/admin/dashboard', function () {
@@ -29,9 +29,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     ->groupBy('cursos.id', 'cursos.nombre', 'cursos.img_url')
     ->get()
     ->map(function ($curso) {
-        $curso->img_url = $curso->img_url ? asset('storage/' . $curso->img_url) : '/img/default-course.png';
+        $curso->img_url = $curso->img_url 
+            ? asset('storage/' . $curso->img_url) 
+            : asset('storage/img/default-course.png');
         return $curso;
     });
+
 
 
         // Traer todos los usuarios

@@ -6,7 +6,7 @@ interface Curso {
   id: number;
   nombre: string;
   descripcion?: string;
-  img_url?: string; 
+  img_url?: string;
 }
 
 interface Props {
@@ -33,52 +33,46 @@ export default function EditModal({ curso }: Props) {
   const descripcionId = `descripcion_${curso.id}`;
   const imagenId = `imagen_${curso.id}`;
 
+  // Cuando cambie el curso (props), sincroniza todo el form
   useEffect(() => {
-    // actualizar preview si cambia el curso que llega por props
+    form.setData({
+      nombre: curso.nombre,
+      descripcion: curso.descripcion || '', // CORRECCIÓN: Maneja valores undefined
+      imagen: null,
+    });
     setPreview(curso.img_url || null);
-  }, [curso.img_url]);
+  }, [curso]);
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
-    
-    // Crear FormData manualmente para mayor control
+
     const formData = new FormData();
     formData.append('nombre', form.data.nombre);
     formData.append('descripcion', form.data.descripcion);
     formData.append('_method', 'PUT');
-    
+
     if (form.data.imagen instanceof File) {
       formData.append('imagen', form.data.imagen);
     }
 
-    // Usar router de Inertia directamente para forzar recarga
     router.post(route('admin.cursos.update', curso.id), formData, {
       preserveScroll: false,
-      preserveState: false, // Importante: no preservar estado
+      preserveState: false,
       onSuccess: () => {
         const modal = document.getElementById(modalId) as HTMLDialogElement;
-        if (modal) {
-          modal.close();
-        }
-        // Limpiar file input
+        if (modal) modal.close();
+
         const fileInput = document.getElementById(imagenId) as HTMLInputElement | null;
         if (fileInput) fileInput.value = '';
-        
-        // Reset form state
-        form.setData({
-          nombre: curso.nombre,
-          descripcion: curso.descripcion || '',
-          imagen: null,
-        });
-        setPreview(curso.img_url || null);
+
         form.clearErrors();
         
-        // Forzar recarga completa de la página actual
-        router.reload({ only: [] }); // Recarga todos los props
+        // CORRECCIÓN: Forzar recarga para actualizar la vista
+        router.reload();
       },
       onError: (errors) => {
         console.error('Errores del formulario:', errors);
-      }
+      },
     });
   }
 
@@ -109,9 +103,7 @@ export default function EditModal({ curso }: Props) {
     form.clearErrors();
     setPreview(curso.img_url || null);
     const modal = document.getElementById(modalId) as HTMLDialogElement;
-    if (modal) {
-      modal.close();
-    }
+    if (modal) modal.close();
   }
 
   return (

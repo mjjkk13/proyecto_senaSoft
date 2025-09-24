@@ -97,29 +97,38 @@ export default function Login({ status, canResetPassword }: LoginProps) {
 
                   {/* Password con toggle */}
                   <div className="form-control relative">
-                    <input
-                      id="password"
-                      type={showPassword ? "text" : "password"}
-                      name="password"
-                      required
-                      tabIndex={2}
-                      autoComplete="current-password"
-                      placeholder="Contraseña"
-                      className={`input input-bordered w-full h-12 bg-slate-700/50 text-white placeholder:text-slate-400 pr-12 ${passwordError || errors.password ? "input-error" : ""}`}
-                      onBlur={handleBlurPassword}
-                    />
-                    <button
-                      type="button"
-                      className="absolute inset-y-0 right-3 flex items-center text-slate-400 hover:text-white"
-                      onClick={() => setShowPassword(!showPassword)}
-                      tabIndex={-1}
-                    >
-                      {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                    </button>
-                    {(errors.password || passwordError) && (
-                      <span className="text-red-400 text-sm mt-1">{errors.password || passwordError}</span>
+                  <input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    required
+                    tabIndex={2}
+                    autoComplete="current-password"
+                    placeholder="Contraseña"
+                    className={`input input-bordered w-full h-12 bg-slate-700/50 text-white placeholder:text-slate-400 pr-12 ${
+                      passwordError || errors.password ? "input-error" : ""
+                    }`}
+                    onBlur={handleBlurPassword}
+                  />
+                  {/* Botón para mostrar/ocultar */}
+                  <button
+                    type="button"
+                    className="absolute inset-y-0 right-3 flex items-center text-slate-400 hover:text-white"
+                    onClick={() => setShowPassword(!showPassword)}
+                    tabIndex={-1}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-5 w-5" />
+                    ) : (
+                      <Eye className="h-5 w-5" />
                     )}
-                  </div>
+                  </button>
+                  {(errors.password || passwordError) && (
+                    <span className="text-red-400 text-sm mt-1">
+                      {errors.password || passwordError}
+                    </span>
+                  )}
+                </div>
 
                   {/* Remember + Reset */}
                   <div className="flex items-center justify-between">
