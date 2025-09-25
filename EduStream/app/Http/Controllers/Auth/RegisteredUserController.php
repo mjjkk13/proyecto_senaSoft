@@ -18,16 +18,6 @@ class RegisteredUserController extends Controller
     /**
      * Show the registration page.
      */
-    public function create(): Response
-    {
-        return Inertia::render('auth/register');
-    }
-
-    /**
-     * Handle an incoming registration request.
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
@@ -46,6 +36,13 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        // Verificar si el usuario es admin antes de redirigir
+        if ($user->role === 'admin') { // Ajusta según el campo real que uses para roles
+            return redirect()->intended(route('admin.dashboard', absolute: false));
+        }
+
+        // Si no es admin, redirigir a otra ruta (por ejemplo home o perfil)
+        return redirect()->route('user.home'); 
     }
+
 }

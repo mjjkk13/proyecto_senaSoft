@@ -13,6 +13,15 @@ use Inertia\Response;
 
 class AuthenticatedSessionController extends Controller
 {
+    protected function authenticated(Request $request, $user)
+{
+    if ($user->rol && $user->rol->nombre === 'Administrador') {
+        return redirect()->route('admin.dashboard');
+    }
+
+    return redirect()->route('user.home');
+}
+
     /**
      * Show the login page.
      */
@@ -33,7 +42,14 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        // Redireccionamiento según rol del usuario
+        $user = $request->user();
+
+        if ($user->rol && $user->rol->nombre === 'Administrador') {
+            return redirect()->route('admin.dashboard');
+        }
+
+        return redirect()->route('user.home');
     }
 
     /**

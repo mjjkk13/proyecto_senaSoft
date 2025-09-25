@@ -1,16 +1,16 @@
 import { useState } from "react";
 import { Link, usePage } from "@inertiajs/react";
-import { dashboard } from "@/routes";
 import { LayoutDashboard, User, Users, ChevronLeft, ChevronRight } from "lucide-react";
+import { route } from "ziggy-js";
 
 export default function Sidebar() {
   const { url } = usePage();
   const [isOpen, setIsOpen] = useState(true);
 
   const links = [
-    { name: "Dashboard", href: dashboard.url(), icon: <LayoutDashboard size={18} /> },
+    { name: "Dashboard", href: route('admin.dashboard'), icon: <LayoutDashboard size={18} /> },
     { name: "Perfil", href: "/profile", icon: <User size={18} /> },
-    { name: "Usuarios", href: "/usuarios", icon: <Users size={18} /> },
+    { name: "Usuarios", href: route('admin.usuarios.index'), icon: <Users size={18} /> },
   ];
 
   return (
