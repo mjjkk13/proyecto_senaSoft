@@ -1,4 +1,4 @@
-import { dashboard, logout } from '@/routes'
+import { logout } from '@/routes'
 import { type BreadcrumbItem } from "@/types";
 import { Head, Link, router, usePage } from "@inertiajs/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -12,7 +12,7 @@ import { route } from 'ziggy-js';
 
 
 const breadcrumbs: BreadcrumbItem[] = [
-  { title: "Dashboard Admin", href: dashboard.url(), label: undefined },
+  { title: "Dashboard Admin", href: route('admin.dashboard'), label: undefined },
 ];
 
 export default function AdminDashboard() {

@@ -1,8 +1,9 @@
 import { ReactNode } from "react";
 import Swal from "sweetalert2";
 
-type Props = {
+type ConfirmUsuarioModalProps = {
   children: ReactNode;
+  usuarioNombre?: string; // opcional: mostrar el nombre del usuario en el modal
   title?: string;
   text?: string;
   confirmButtonText?: string;
@@ -12,16 +13,17 @@ type Props = {
 
 export default function ConfirmUsuarioModal({
   children,
-  title = "¿Estás seguro de eliminar este usuario?",
-  text = "¡Esta acción no se puede revertir!",
+  usuarioNombre,
+  title,
+  text,
   confirmButtonText = "Sí, eliminar usuario",
   cancelButtonText = "Cancelar",
   onConfirm,
-}: Props) {
+}: ConfirmUsuarioModalProps) {
   const open = () => {
     Swal.fire({
-      title,
-      text,
+      title: title || `¿Estás seguro de eliminar a ${usuarioNombre ?? "este usuario"}?`,
+      text: text || "¡Esta acción no se puede revertir!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",

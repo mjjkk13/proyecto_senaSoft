@@ -37,7 +37,7 @@ export default function EditModal({ curso }: Props) {
   useEffect(() => {
     form.setData({
       nombre: curso.nombre,
-      descripcion: curso.descripcion || '', // CORRECCIÓN: Maneja valores undefined
+      descripcion: curso.descripcion,
       imagen: null,
     });
     setPreview(curso.img_url || null);
@@ -66,9 +66,6 @@ export default function EditModal({ curso }: Props) {
         if (fileInput) fileInput.value = '';
 
         form.clearErrors();
-        
-        // CORRECCIÓN: Forzar recarga para actualizar la vista
-        router.reload();
       },
       onError: (errors) => {
         console.error('Errores del formulario:', errors);

@@ -11,51 +11,7 @@ use Illuminate\Support\Facades\Log;
 
 class CursoController extends Controller
 {
-    public function index()
-    {
-        $cursos = Curso::withCount('inscripciones')->get()->map(function ($curso) {
-            return [
-                'id' => $curso->id,
-                'title' => $curso->nombre, 
-                'descripcion' => $curso->descripcion,
-                'students_count' => $curso->inscripciones_count, 
-                'img_url' => $curso->img_url ? Storage::url($curso->img_url) : null,
-            ];
-        });
-
-        $stats = [
-            'totalCursos'   => $cursos->count(),
-            'totalInscritos'=> $cursos->sum('students_count'), 
-            'totalUsuarios' => 0, 
-            'cursosPopulares' => [], 
-        ];
-
-        dump($cursos->toArray());
-        return response()->json($cursos);
-
-        /**return Inertia::render('Dashboard', [
-            'cursos' => $cursos,
-            'stats'  => $stats,
-        ]);*/
-    }
-    public function debug()
-{
-    $cursos = Curso::withCount('inscripciones')->get()->map(function ($curso) {
-        return [
-            'id' => $curso->id,
-            'title' => $curso->nombre,
-            'descripcion' => $curso->descripcion,
-            'students_count' => $curso->inscripciones_count,
-            'img_url' => $curso->img_url ? Storage::url($curso->img_url) : null,
-        ];
-    });
-
-    return response()->json([
-        'cursos' => $cursos,
-        'total' => $cursos->count()
-    ]);
-}
-
+       
     public function create()
     {
         return Inertia::render('Cursos/Create');
@@ -78,7 +34,7 @@ class CursoController extends Controller
 
         Curso::create($validated);
 
-        return redirect()->route('dashboard')->with('success', 'Curso creado exitosamente.');
+        return redirect()->route('admin/dashboard')->with('success', 'Curso creado exitosamente.');
     }
 
     public function edit(Curso $curso)
@@ -118,7 +74,7 @@ class CursoController extends Controller
 
         
 
-        return redirect()->route('dashboard')->with('success', 'Curso actualizado correctamente.');
+        return redirect()->route('admin/dashboard')->with('success', 'Curso actualizado correctamente.');
     }
 
     public function destroy(Curso $curso)
@@ -129,6 +85,6 @@ class CursoController extends Controller
 
         $curso->delete();
 
-        return redirect()->route('dashboard')->with('success', 'Curso eliminado.');
+        return redirect()->route('admin/dashboard')->with('success', 'Curso eliminado.');
     }
 }
