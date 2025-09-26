@@ -9,7 +9,7 @@ export default function Sidebar() {
 
   const links = [
     { name: "Dashboard", href: route('admin.dashboard'), icon: <LayoutDashboard size={18} /> },
-    { name: "Perfil", href: "/profile", icon: <User size={18} /> },
+    { name: "Perfil", href: route('ajustes.index'), icon: <User size={18} /> },
     { name: "Usuarios", href: route('admin.usuarios.index'), icon: <Users size={18} /> },
   ];
 

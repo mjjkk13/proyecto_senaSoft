@@ -6,19 +6,22 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::middleware('auth')->group(function () {
-    Route::redirect('settings', '/settings/profile');
+    // Redirigir /ajustes a /ajustes/perfil
+    Route::redirect('ajustes', '/ajustes/perfil')->name('ajustes.index');
 
-    Route::get('settings/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('settings/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('settings/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    // Ajustes de perfil
+    Route::get('ajustes/perfil', [ProfileController::class, 'edit'])->name('ajustes.perfil.edit');
+    Route::patch('ajustes/perfil', [ProfileController::class, 'update'])->name('ajustes.perfil.update');
+    Route::delete('ajustes/perfil', [ProfileController::class, 'destroy'])->name('ajustes.perfil.destroy');
 
-    Route::get('settings/password', [PasswordController::class, 'edit'])->name('password.edit');
-
-    Route::put('settings/password', [PasswordController::class, 'update'])
+    // Ajustes de contraseña
+    Route::get('ajustes/contraseña', [PasswordController::class, 'edit'])->name('ajustes.contraseña.edit');
+    Route::put('ajustes/contraseña', [PasswordController::class, 'update'])
         ->middleware('throttle:6,1')
-        ->name('password.update');
+        ->name('ajustes.contraseña.update');
 
-    Route::get('settings/appearance', function () {
-        return Inertia::render('settings/appearance');
-    })->name('appearance.edit');
+    // Ajustes de apariencia
+    Route::get('ajustes/apariencia', function () {
+        return Inertia::render('settings/ProfileSettings');
+    })->name('ajustes.apariencia.edit');
 });
