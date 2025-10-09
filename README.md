@@ -104,8 +104,7 @@ Plataforma web full-stack para cursos online con:
    ```
 3. Copiar ejemplos de variables de entorno (si aplica):
    ```bash
-   cp backend/.env.example backend/.env
-   cp frontend/.env.example frontend/.env
+   cp .env.example .env
    ```
 4. Crear enlace simbólico para public (render de img)
 ```bash
